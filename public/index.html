@@ -4,6 +4,45 @@
     <title>JavaScript Workshop with govirtuo.com</title>
   </head>
   <body>
-    <script src="index.js"></script>
+  	<form name="carrental" method="get">
+	    <script src="index.js"></script>
+	    <h1>Rental car price computation</h1>
+
+	    <fieldset>
+			<legend>Car information</legend>
+			<br>
+				
+			<div>
+		    <label for="car_name">car name</label>
+			<input type="text" name="car_name" id="car_name"><br>
+			<input type="number" name="price_day" id="price_day" placeholder="Price per day"/>&emsp;<br>
+	        <input type="number" name="price_km" id="price_km" placeholder="Price per km"/>
+			<br><br>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<legend>Rental information</legend>
+			<br>
+				
+			<div>
+		    <label for="driver_name">driver name</label>
+			<input type="text" name="driver_name" id="driver_name"><br>
+			<input type="date" name="begin_date" id="begin_date" placeholder="Rental begin date"/><br>
+			<input type="date" name="return_date" id="return_date" placeholder="Rental return date"/><br>
+			<br>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<legend>Price computation</legend>
+			<br>
+				
+			<div class="button">
+		    <button type="button" id="compute" onclick="javascript:rental_price()">compute</button>
+			<br><br>
+			</div>
+		</fieldset>
+	</form>
   </body>
 </html>

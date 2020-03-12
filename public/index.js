@@ -158,6 +158,101 @@ const actors = [{
   }]
 }];
 
-console.log(cars);
-console.log(rentals);
-console.log(actors);
+
+//console.log(cars);
+//console.log(rentals);
+//console.log(actors);
+
+const commission_rate=0.3;
+const insurance_rate=0.5;
+const treasury_tax=1;
+const deductible_tax=4;
+
+var commission_cost,insurance,treasury,virtuo_benefit,deductible=0;
+var commission={};
+
+function rental_price()
+{
+  for (var i=0;i<rentals.length;i++)
+  {
+    //getting the number of days
+    var pickupdate = new Date(rentals[i].pickupDate);
+    var returndate= new Date(rentals[i].returnDate);
+    var time_diff=returndate.getTime()-pickupdate.getTime();
+    var days = time_diff / (1000 * 3600 * 24)+1; 
+
+    //number of km
+    var km=rentals[i].distance;
+    
+    //price per day and price per km
+    var car_id=rentals[i].carId;
+    var ppd,ppk;
+    for (var j=0;j<cars.length;j++){
+        if(cars[j].id==car_id){
+            ppd=cars[j].pricePerDay;
+            ppk=cars[j].pricePerKm;
+        }
+    }
+
+    //rental price
+    var price=days*ppd+km*ppk;
+
+    if(days>1 && days<=4)
+      price*=0.9;
+    else if(days<=10)
+      price*=0.7;
+    else
+      price*=0.5;
+
+    price=price.toFixed(2);
+    //commission
+    commission_cost=(price*commission_rate).toFixed(2);
+    insurance=(commission_cost*insurance_rate).toFixed(2);
+    treasury=days*treasury_tax;
+    virtuo_benefit=(commission_cost-insurance-treasury).toFixed(2);
+    commission={'insurance':insurance,'treasury':treasury,'virtuo':virtuo_benefit};
+
+    //deductible reduction option
+    if(rentals[i].options.deductibleReduction==true)
+      deductible=deductible_tax*days;
+
+
+    //pay the actors :
+    for (var k=0;k<actors.length;k++) //iterate through the actors list (going through each rental)
+    {
+      if (rentals[i].id==actors[k].rentalId) //if the rentals id match
+      {
+        for(var l=0;l<actors[k].payment.length;l++) //iterate through payment list
+        {            
+            if(actors[k].payment[l].who == 'driver')
+            {
+              actors[k].payment[l].amount=price+deductible;
+            }
+            if(actors[k].payment[l].who == 'partner')
+              actors[k].payment[l].amount=(price-commission_cost).toFixed(2);
+            if(actors[k].payment[l].who == 'insurance')
+              actors[k].payment[l].amount=insurance;
+            if(actors[k].payment[l].who == 'treasury')
+              actors[k].payment[l].amount=treasury;
+            if(actors[k].payment[l].who == 'virtuo')
+              actors[k].payment[l].amount=virtuo_benefit+deductible;
+           
+        }
+        console.log(actors[k].rentalId);
+        console.log(actors[k].payment);
+      }
+    }
+
+    //display recap 
+    /*
+    console.log("rental id : ",rentals[i].id);
+    console.log("rental price :",(price).toFixed(2));
+    console.log(commission);
+
+    */
+  
+  }
+  
+}
+
+rental_price();
